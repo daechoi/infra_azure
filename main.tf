@@ -1,9 +1,11 @@
 terraform {
+  required_version = ">= 0.12.0"
   required_providers {
     azurerm = {
       source = "hashicorp/azurerm"
       version = ">= 2.26"
     }
+    google = ">=1.14.0"
   }
 }
 
@@ -110,6 +112,11 @@ data "azurerm_public_ip" "ip" {
   name = azurerm_public_ip.public_ip.name
   resource_group_name = azurerm_virtual_machine.vm.resource_group_name
   depends_on = [azurerm_virtual_machine.vm]
+}
+
+data "google_dns_managed_zone" "container" {
+  project = var.project_id != "" ? var.project_id : null
+  name = var.managed_zone_name
 }
 
 output "public_ip_address" {
